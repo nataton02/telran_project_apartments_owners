@@ -1,10 +1,13 @@
 package de.telran.telran_project_apartments_owners.controller;
 
 import de.telran.telran_project_apartments_owners.dto.BuildingRequestDTO;
+import de.telran.telran_project_apartments_owners.dto.BuildingResponseDTO;
 import de.telran.telran_project_apartments_owners.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class BuildingController {
@@ -19,5 +22,9 @@ public class BuildingController {
         buildingService.createBuilding(request, count);
     }
 
-
+    @GetMapping("api/buildings")
+    public List<BuildingResponseDTO> getAllBuildings(@RequestParam(name = "street",
+            required = false) String street) {
+        return buildingService.getAllBuildings(street);
+    }
 }

@@ -1,6 +1,7 @@
 package de.telran.telran_project_apartments_owners.service.impl;
 
 import de.telran.telran_project_apartments_owners.dto.BuildingRequestDTO;
+import de.telran.telran_project_apartments_owners.dto.BuildingResponseDTO;
 import de.telran.telran_project_apartments_owners.entity.Apartment;
 import de.telran.telran_project_apartments_owners.entity.Building;
 import de.telran.telran_project_apartments_owners.repository.ApartmentRepository;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
@@ -40,7 +42,6 @@ public class BuildingServiceImpl implements BuildingService {
                 }
             }
         }
-
         else {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
@@ -49,6 +50,21 @@ public class BuildingServiceImpl implements BuildingService {
         }
     }
 
+    @Override
+    public List<BuildingResponseDTO> getAllBuildings(String street) {
+        if(street != null) {
+            return buildingRepository.findAllByStreetIgnoreCase(street)
+                    .stream()
+                    .map(this::mapBuildingToDto)
+                    .collect(Collectors.toList());
+        }
+        else {
+            return buildingRepository.findAll()
+                    .stream()
+                    .map(this::mapBuildingToDto)
+                    .collect(Collectors.toList());
+        }
+    }
 
 
     private Building mapDtoToBuilding(BuildingRequestDTO request) {
@@ -57,4 +73,14 @@ public class BuildingServiceImpl implements BuildingService {
                 .house(request.getHouse())
                 .build();
     }
+
+    private BuildingResponseDTO mapBuildingToDto(Building building) {
+        List<Apartment> apartments = apartmentRepository.findAllByBuilding(building);
+        return BuildingResponseDTO.builder()
+                .id(building.getId())
+                .address(building.getStreet() + " " + building.getHouse())
+                .apartmentsCount(apartments.size())
+                .build();
+    }
+
 }
