@@ -10,4 +10,6 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     List<Apartment> findAllByBuilding(Building building);
 
 
+
+
 }
