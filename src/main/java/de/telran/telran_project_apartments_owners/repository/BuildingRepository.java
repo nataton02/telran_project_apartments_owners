@@ -8,8 +8,7 @@ import java.util.List;
 public interface BuildingRepository extends JpaRepository<Building, Long> {
     Building findByStreetAndHouse(String street, String house);
 
-    Building findByStreet(String street);
-
     List<Building> findAllByStreetIgnoreCase(String street);
+
 
 }
