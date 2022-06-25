@@ -1,6 +1,7 @@
 package de.telran.telran_project_apartments_owners.service.impl;
 
 import de.telran.telran_project_apartments_owners.dto.OwnerRequestDTO;
+import de.telran.telran_project_apartments_owners.dto.OwnerResponseDTO;
 import de.telran.telran_project_apartments_owners.entity.Apartment;
 import de.telran.telran_project_apartments_owners.entity.Building;
 import de.telran.telran_project_apartments_owners.entity.Owner;
@@ -66,6 +67,26 @@ public class OwnerServiceImpl implements OwnerService {
             owner.setApartment(apartment);
 
         ownerRepository.save(owner);
+    }
+
+    @Override
+    public OwnerResponseDTO getOwnerById(Long ownerId) {
+
+        Owner owner =  ownerRepository.findById(ownerId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                String.format("The owner with id %s does not exist", ownerId)));
+        return mapOwnerToDto(owner);
+    }
+
+
+
+    private OwnerResponseDTO mapOwnerToDto(Owner owner) {
+        return OwnerResponseDTO.builder()
+                .name(owner.getName())
+                .apartment(owner.getApartment())
+                .build();
     }
 
     private Owner mapDtoToOwner(OwnerRequestDTO request) {
