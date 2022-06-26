@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public interface OwnerService {
     void createOwner(OwnerRequestDTO request);
 
-    void editOwner(Long buildingId, Long apartmentId, Long ownerId);
+    void toggleOwner(Long buildingId, Long apartmentId, Long ownerId);
 
     OwnerResponseDTO getOwnerById(Long ownerId);
 }

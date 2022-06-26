@@ -31,7 +31,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public void editOwner(Long buildingId, Long apartmentId, Long ownerId) {
+    public void toggleOwner(Long buildingId, Long apartmentId, Long ownerId) {
         Building building = buildingRepository.findById(buildingId)
                 .orElseThrow(() ->
                         new ResponseStatusException(
@@ -58,10 +58,7 @@ public class OwnerServiceImpl implements OwnerService {
                                 String.format("The owner with id %s does not exist", ownerId)));
 
         if(owner.getApartment() != null && owner.getApartment().getId().equals(apartmentId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    String.format("The owner with id %s already lives in the apartment with id %s",
-                            ownerId, apartmentId));
+            owner.setApartment(null);
         }
         else
             owner.setApartment(apartment);

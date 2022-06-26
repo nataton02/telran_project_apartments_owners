@@ -31,16 +31,14 @@ public class BuildingServiceImpl implements BuildingService {
             Building building = mapDtoToBuilding(request);
             buildingRepository.save(building);
 
-            if (count != null) {
                 List<Apartment> apartments = new ArrayList<>();
-                while (apartments.size() <= count) {
+                while (apartments.size() < count)
                     apartments.add(new Apartment());
-                }
-                for (Apartment apartment : apartments) {
+
+                for (Apartment apartment : apartments)
                     apartment.setBuilding(building);
-                    apartmentRepository.save(apartment);
-                }
-            }
+
+                apartmentRepository.saveAll(apartments);
         }
         else {
             throw new ResponseStatusException(

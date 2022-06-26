@@ -21,7 +21,7 @@ public class OwnerController {
     public void editOwner(@PathVariable("buildingId") Long buildingId,
                               @PathVariable("apartmentId") Long apartmentId,
                               @PathVariable("ownerId") Long ownerId) {
-        ownerService.editOwner(buildingId, apartmentId, ownerId);
+        ownerService.toggleOwner(buildingId, apartmentId, ownerId);
     }
 
     @GetMapping("api/owners/{id}")
