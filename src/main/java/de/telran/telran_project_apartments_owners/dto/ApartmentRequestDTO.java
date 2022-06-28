@@ -15,6 +15,6 @@ public class ApartmentRequestDTO {
 
     private Integer apartmentNumber;
     private Boolean hasBalcony;
-    private Building building;
+    private Long buildingId;
     private List<Owner> owners;
 }

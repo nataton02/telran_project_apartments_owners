@@ -13,10 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ApartmentServiceImpl implements ApartmentService {
 
     @Autowired
@@ -37,20 +39,26 @@ public class ApartmentServiceImpl implements ApartmentService {
         if(hasOwners) {
             return apartmentRepository.findAllByBuilding(building)
                     .stream()
-                    .filter(apartment -> ownerRepository.findAllByApartment(apartment).size() != 0)
-                    .map(this::mapApartmentToDto)
+                    .filter(apartment -> ownerRepository.countAllByApartment(apartment) != 0)
+                    .map(apartment -> {
+                        List<Owner> owners = ownerRepository.findAllByApartment(apartment);
+                        return this.convertApartmentToDto(apartment, owners);
+                    })
                     .collect(Collectors.toList());
         }
         else {
             return apartmentRepository.findAllByBuilding(building)
                     .stream()
-                    .map(this::mapApartmentToDto)
+                    .map(apartment -> {
+                        List<Owner> owners = ownerRepository.findAllByApartment(apartment);
+                        return this.convertApartmentToDto(apartment, owners);
+                    })
                     .collect(Collectors.toList());
         }
     }
 
-    private ApartmentResponseDTO mapApartmentToDto(Apartment apartment) {
-        List<Owner> owners = ownerRepository.findAllByApartment(apartment);
+    private ApartmentResponseDTO convertApartmentToDto(Apartment apartment, List<Owner> owners) {
+
         return ApartmentResponseDTO.builder()
                 .id(apartment.getId())
                 .apartmentNumber(apartment.getApartmentNumber())

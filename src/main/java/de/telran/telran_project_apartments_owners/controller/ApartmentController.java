@@ -16,8 +16,8 @@ public class ApartmentController {
 
     @GetMapping("/api/buildings/{buildingId}/apartments")
     public List<ApartmentResponseDTO> getApartments(@PathVariable("buildingId") Long buildingId,
-                                                             @RequestParam(name = "hasOwners", required = false)
-                                                                     boolean hasOwners) {
+                                                    @RequestParam(name = "hasOwners", required = false)
+                                                            boolean hasOwners) {
         return apartmentService.getApartments(buildingId, hasOwners);
     }
 

@@ -14,7 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class OwnerServiceImpl implements OwnerService {
 
     @Autowired
@@ -27,7 +30,7 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public void createOwner(OwnerRequestDTO request) {
-        ownerRepository.save(mapDtoToOwner(request));
+        ownerRepository.save(convertDtoToOwner(request));
     }
 
     @Override
@@ -38,30 +41,20 @@ public class OwnerServiceImpl implements OwnerService {
                                 HttpStatus.NOT_FOUND,
                                 String.format("Building with id %s does not exist", buildingId)));
 
-        Apartment apartment = apartmentRepository.findById(apartmentId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                String.format("Apartment with id %s does not exist", apartmentId)));
-
-        if(!apartment.getBuilding().equals(building)) {
+        Apartment apartment = apartmentRepository.findByIdAndBuildingId(apartmentId, buildingId);
+        if(apartment == null){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    String.format("Apartment with id %s does not exist in building with id %s",
-                            apartmentId, buildingId));
+                    String.format("Apartment with id %s does not exist in building width id %s", apartmentId, buildingId));
         }
 
-        Owner owner = ownerRepository.findById(ownerId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                String.format("The owner with id %s does not exist", ownerId)));
+        Owner owner = findOwnerByIdOrThrow(ownerId);
 
-        if(owner.getApartment() != null && owner.getApartment().getId().equals(apartmentId)) {
+        if(ownerRepository.findByIdAndApartmentId(ownerId, apartmentId) == null) {
+            owner.setApartment(apartment);
+        } else {
             owner.setApartment(null);
         }
-        else
-            owner.setApartment(apartment);
 
         ownerRepository.save(owner);
     }
@@ -69,24 +62,26 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public OwnerResponseDTO getOwnerById(Long ownerId) {
 
-        Owner owner =  ownerRepository.findById(ownerId)
+        Owner owner =  findOwnerByIdOrThrow(ownerId);
+        return convertOwnerToDto(owner);
+    }
+
+    private Owner findOwnerByIdOrThrow(Long ownerId) {
+        return ownerRepository.findById(ownerId)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
                                 String.format("The owner with id %s does not exist", ownerId)));
-        return mapOwnerToDto(owner);
     }
 
-
-
-    private OwnerResponseDTO mapOwnerToDto(Owner owner) {
+    private OwnerResponseDTO convertOwnerToDto(Owner owner) {
         return OwnerResponseDTO.builder()
                 .name(owner.getName())
                 .apartment(owner.getApartment())
                 .build();
     }
 
-    private Owner mapDtoToOwner(OwnerRequestDTO request) {
+    private Owner convertDtoToOwner(OwnerRequestDTO request) {
         return Owner.builder()
                 .name(request.getName())
                 .apartment(null)

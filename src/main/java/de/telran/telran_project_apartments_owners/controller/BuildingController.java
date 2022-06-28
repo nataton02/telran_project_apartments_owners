@@ -1,7 +1,6 @@
 package de.telran.telran_project_apartments_owners.controller;
 
-import de.telran.telran_project_apartments_owners.dto.BuildingRequestDTO;
-import de.telran.telran_project_apartments_owners.dto.BuildingResponseDTO;
+import de.telran.telran_project_apartments_owners.dto.*;
 import de.telran.telran_project_apartments_owners.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +17,23 @@ public class BuildingController {
     @PostMapping("/api/buildings")
     @ResponseStatus(HttpStatus.CREATED)
     public void createBuilding(@RequestBody BuildingRequestDTO request,
-            @RequestParam(name="apartmentsCount", required = false) Integer count) {
+                               @RequestParam(name = "apartmentsCount", required = false) Integer count) {
         buildingService.createBuilding(request, count);
     }
 
+    @PostMapping("/api/buildings/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createBuilding(@RequestBody List<BuildingRequestDTO> requestBuilding,
+                               @RequestBody List<ApartmentRequestDTO> requestApartments,
+                               @RequestBody OwnerRequestDTO requestOwner) {
+        buildingService.createCity(requestBuilding, requestApartments, requestOwner);
+    }
+
     @GetMapping("api/buildings")
-    public List<BuildingResponseDTO> getAllBuildings(@RequestParam(name = "street",
-            required = false) String street) {
+    public List<BuildingResponseDTO> getAllBuildings(
+            @RequestParam(name = "street", required = false) String street) {
         return buildingService.getAllBuildings(street);
     }
+
+
 }

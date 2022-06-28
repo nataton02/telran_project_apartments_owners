@@ -18,9 +18,9 @@ public class OwnerController {
     }
 
     @PutMapping("/api/buildings/{buildingId}/apartments/{apartmentId}/owners/{ownerId}")
-    public void editOwner(@PathVariable("buildingId") Long buildingId,
-                              @PathVariable("apartmentId") Long apartmentId,
-                              @PathVariable("ownerId") Long ownerId) {
+    public void updateOwner(@PathVariable("buildingId") Long buildingId,
+                            @PathVariable("apartmentId") Long apartmentId,
+                            @PathVariable("ownerId") Long ownerId) {
         ownerService.toggleOwner(buildingId, apartmentId, ownerId);
     }
 

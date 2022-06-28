@@ -10,5 +10,5 @@ import lombok.Data;
 @Builder
 public class OwnerRequestDTO {
     private String name;
-    private Apartment apartment;
+    private Long apartmentId;
 }
