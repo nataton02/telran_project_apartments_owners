@@ -1,4 +1,4 @@
-# telran_project_apartments_owners
+
 **POST** */api/buildings?apartmentsCount=5* 
 
 201 - CREATED 
