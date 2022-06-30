@@ -21,14 +21,6 @@ public class BuildingController {
         buildingService.createBuilding(request, count);
     }
 
-    @PostMapping("/api/buildings/bulk")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createBuilding(@RequestBody List<BuildingRequestDTO> requestBuilding,
-                               @RequestBody List<ApartmentRequestDTO> requestApartments,
-                               @RequestBody OwnerRequestDTO requestOwner) {
-        buildingService.createCity(requestBuilding, requestApartments, requestOwner);
-    }
-
     @GetMapping("api/buildings")
     public List<BuildingResponseDTO> getAllBuildings(
             @RequestParam(name = "street", required = false) String street) {

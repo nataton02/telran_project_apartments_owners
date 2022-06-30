@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
 
 @Service
-@Transactional
 public class OwnerServiceImpl implements OwnerService {
 
     @Autowired

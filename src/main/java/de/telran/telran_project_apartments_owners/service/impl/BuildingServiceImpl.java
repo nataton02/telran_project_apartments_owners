@@ -17,13 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
 public class BuildingServiceImpl implements BuildingService {
 
     @Autowired
@@ -32,54 +30,7 @@ public class BuildingServiceImpl implements BuildingService {
     @Autowired
     private ApartmentRepository apartmentRepository;
 
-    @Autowired
-    private OwnerRepository ownerRepository;
-
-    @Transactional
     @Override
-    public void saveOwnerByApartment(Apartment apartment){
-        apartmentRepository.save(apartment);
-        ownerRepository.saveAllByApartment(apartment);
-    }
-
-    @Override
-    public void createCity(List<BuildingRequestDTO> requestBuildings,
-                           List<ApartmentRequestDTO> requestApartments,
-                           OwnerRequestDTO requestOwner) {
-
-        for(var requestBuilding : requestBuildings) {
-            if (buildingRepository.findByStreetAndHouse(
-                    requestBuilding.getStreet().toLowerCase(),
-                    requestBuilding.getHouse().toLowerCase()) != null) {
-                continue;
-            }
-
-            var building = convertDtoToBuilding(requestBuilding);
-            buildingRepository.save(building);
-
-
-            for (var requestApartment : requestApartments) {
-
-               Apartment apartment = Apartment.builder()
-                       .apartmentNumber(requestApartment.getApartmentNumber())
-                       .hasBalcony(requestApartment.getHasBalcony())
-                       .build();
-               apartment.setBuilding(building);
-
-               List<Owner> owners = Stream
-                       .generate(() -> Owner.builder()
-                               .name(requestOwner.getName())
-                               .build()
-                       )
-                       .peek(owner -> owner.setApartment(apartment))
-                       .collect(Collectors.toList());
-
-               saveOwnerByApartment(apartment);
-            }
-        }
-    }
-
-
     public void createBuilding(BuildingRequestDTO request, Integer count) {
         if(buildingRepository.findByStreetAndHouse(request.getStreet().toLowerCase(),
                                                     request.getHouse().toLowerCase()) != null) {

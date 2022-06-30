@@ -14,5 +14,6 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     Owner findByIdAndApartmentId(Long ownerId, Long apartmentId);
 
-    List<Owner> saveAllByApartment(Apartment apartment);
+
+
 }

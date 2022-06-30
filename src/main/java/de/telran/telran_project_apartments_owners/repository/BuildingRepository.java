@@ -10,5 +10,7 @@ public interface BuildingRepository extends JpaRepository<Building, Long> {
 
     List<Building> findAllByStreetIgnoreCase(String street);
 
+    boolean existsByStreetAndHouse(String street, String house);
+
 
 }

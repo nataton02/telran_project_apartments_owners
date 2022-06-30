@@ -1,16 +1,13 @@
 package de.telran.telran_project_apartments_owners.dto;
 
-import de.telran.telran_project_apartments_owners.entity.Apartment;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-@Builder
-public class OwnerRequestDTO {
+public class OwnerBulkRequestDTO {
+
     private String name;
-    private Long apartmentId;
 }

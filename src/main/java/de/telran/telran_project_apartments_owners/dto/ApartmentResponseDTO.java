@@ -1,5 +1,6 @@
 package de.telran.telran_project_apartments_owners.dto;
 
+import de.telran.telran_project_apartments_owners.entity.Building;
 import de.telran.telran_project_apartments_owners.entity.Owner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
