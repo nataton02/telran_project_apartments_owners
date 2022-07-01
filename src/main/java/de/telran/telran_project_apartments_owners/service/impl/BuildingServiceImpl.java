@@ -1,22 +1,17 @@
 package de.telran.telran_project_apartments_owners.service.impl;
 
-import de.telran.telran_project_apartments_owners.dto.ApartmentRequestDTO;
 import de.telran.telran_project_apartments_owners.dto.BuildingRequestDTO;
 import de.telran.telran_project_apartments_owners.dto.BuildingResponseDTO;
-import de.telran.telran_project_apartments_owners.dto.OwnerRequestDTO;
 import de.telran.telran_project_apartments_owners.entity.Apartment;
 import de.telran.telran_project_apartments_owners.entity.Building;
-import de.telran.telran_project_apartments_owners.entity.Owner;
 import de.telran.telran_project_apartments_owners.repository.ApartmentRepository;
 import de.telran.telran_project_apartments_owners.repository.BuildingRepository;
-import de.telran.telran_project_apartments_owners.repository.OwnerRepository;
 import de.telran.telran_project_apartments_owners.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,12 +38,17 @@ public class BuildingServiceImpl implements BuildingService {
         Building building = convertDtoToBuilding(request);
         buildingRepository.save(building);
 
-        var apartments = Stream.generate(Apartment::new)
-                .limit(count)
-                .peek(apartment -> apartment.setBuilding(building))
-                .collect(Collectors.toList());
+        var apartmentsDTO = request.getApartments();
 
-        apartmentRepository.saveAll(apartments);
+        if(apartmentsDTO == null || apartmentsDTO.isEmpty()) {
+            var apartments = Stream.generate(Apartment::new)
+                    .limit(count)
+                    .peek(apartment -> apartment.setBuilding(building))
+                    .collect(Collectors.toList());
+
+            apartmentRepository.saveAll(apartments);
+        }
+
     }
 
     @Override

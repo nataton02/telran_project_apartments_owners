@@ -59,7 +59,7 @@ public class ApartmentServiceImpl implements ApartmentService {
     private ApartmentResponseDTO convertApartmentToDto(Apartment apartment, List<Owner> owners) {
 
         return ApartmentResponseDTO.builder()
-                .id(apartment.getId())
+                //.id(apartment.getId())
                 .apartmentNumber(apartment.getApartmentNumber())
                 .owners(owners)
                 .build();
