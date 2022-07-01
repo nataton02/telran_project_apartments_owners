@@ -38,17 +38,12 @@ public class BuildingServiceImpl implements BuildingService {
         Building building = convertDtoToBuilding(request);
         buildingRepository.save(building);
 
-        var apartmentsDTO = request.getApartments();
+        var apartments = Stream.generate(Apartment::new)
+                .limit(count)
+                .peek(apartment -> apartment.setBuilding(building))
+                .collect(Collectors.toList());
 
-        if(apartmentsDTO == null || apartmentsDTO.isEmpty()) {
-            var apartments = Stream.generate(Apartment::new)
-                    .limit(count)
-                    .peek(apartment -> apartment.setBuilding(building))
-                    .collect(Collectors.toList());
-
-            apartmentRepository.saveAll(apartments);
-        }
-
+        apartmentRepository.saveAll(apartments);
     }
 
     @Override
